@@ -1,9 +1,14 @@
+#include <stdio.h>
+#include "util.h"
 #include "setup.h"
 
-#define PORT 51200
-
 int main(void){
-	struct sockaddr interface = connection_setup();
-		
+	struct sockaddr interface;
+	struct sockaddr_in client;
+	int s;
+	discover_interface(&interface);
+
+	s = create_connection(&interface, &client);
+	printf("%d\n",s);
 	return 0;
 }
