@@ -25,13 +25,13 @@ void discover_interface(struct sockaddr *interface_result){
 
 	/* get user's choice for interface */
 	int choice = -1;
-	printf("%d Network interfaces found; which interface do you want to use(%d-%d): ",count,0,count);
+	printf("%d Network interfaces found; which interface do you want to use(%d-%d): ",count,0,count-1);
 	while(1){
 		scanf("%d",&choice);
-		if(choice >= 0 && choice <= count)
+		if(choice >= 0 && choice < count)
 			break;
 		else{
-			printf("Value must be within range (%d-%d)\nTry again: ",0,count);
+			printf("Value must be within range (%d-%d)\nTry again: ",0,count-1);
 		}
 	}
 	printf("interface chosen %d\n",choice);
