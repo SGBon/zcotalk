@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 #include <ifaddrs.h>
 #include <string.h>
 #include "setup.h"
@@ -53,7 +54,7 @@ void discover_interface(struct sockaddr *interface_result){
 int create_connection(struct sockaddr *interface, struct sockaddr_in *client){
 	int s;
 	if((s = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP)) == -1){
-		die("Failed to create socket");
+		die("Failed to create client socket");
 	}
 
 	/* required so that the client can use broadcast IPs */
@@ -61,7 +62,7 @@ int create_connection(struct sockaddr *interface, struct sockaddr_in *client){
 	setsockopt(s,SOL_SOCKET,SO_BROADCAST,&broadcastEnable,sizeof(broadcastEnable));
 
 	/* initialize the client struct */
-	memset((char *) client,0,sizeof(client));
+	memset((char *) client,0,sizeof(struct sockaddr_in));
 	client->sin_family = AF_INET;
 	client->sin_port = htons(UTPORT);
 
@@ -69,4 +70,32 @@ int create_connection(struct sockaddr *interface, struct sockaddr_in *client){
 	struct sockaddr_in* bcast = (struct sockaddr_in*) interface;
 	client->sin_addr = bcast->sin_addr;
 	return s;
+}
+
+int create_listener(struct sockaddr_in *server){
+	int s;
+	socklen_t slen = sizeof(struct sockaddr_in);
+	if((s=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP)) == -1){
+		die("Failed to create server socket");
+	}
+
+	/* initialize the struct, set fields */
+	memset((char *) server,0,slen);
+	server->sin_family = AF_INET;
+	server->sin_port = htons(UTPORT);
+	server->sin_addr.s_addr = htonl(INADDR_ANY);
+
+	/* bind socket to port */
+	if(bind(s,(struct sockaddr*) server,slen) == -1){
+		die("Failed to bind server socket");
+	}
+
+	return s;
+}
+
+void destroy_connection(int clientd){
+	close(clientd);
+}
+void destroy_listener(int serverd){
+	close(serverd);
 }

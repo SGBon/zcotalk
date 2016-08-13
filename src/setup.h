@@ -9,4 +9,11 @@ void discover_interface(struct sockaddr *interface_result);
 in other words, the client of client-server */
 int create_connection(struct sockaddr *interface, struct sockaddr_in *client);
 
+/* create the the listener which will receive messages */
+int create_listener(struct sockaddr_in *server);
+
+/* closes file descriptors */
+void destroy_connection(int clientd);
+void destroy_listener(int serverd);
+
 #endif

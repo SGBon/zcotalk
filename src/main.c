@@ -1,14 +1,19 @@
 #include <stdio.h>
-#include "util.h"
 #include "setup.h"
 
 int main(void){
 	struct sockaddr interface;
-	struct sockaddr_in client;
-	int s;
 	discover_interface(&interface);
 
-	s = create_connection(&interface, &client);
-	printf("%d\n",s);
+	int client_socket;
+	struct sockaddr_in client;
+	client_socket = create_connection(&interface, &client);
+
+	int server_socket;
+	struct sockaddr_in server;
+	server_socket = create_listener(&server);
+
+	destroy_connection(client_socket);
+	destroy_listener(server_socket);
 	return 0;
 }
