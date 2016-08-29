@@ -3,7 +3,7 @@ CFLAGS=-c -Wall -Wextra -g3
 LDFLAGS=-g3 -lpthread
 SOURCES=main.c setup.c util.c messenger.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=uoitalk
+EXECUTABLE=zcotalk
 
 all: $(SOURCES) $(EXECUTABLE)
 
