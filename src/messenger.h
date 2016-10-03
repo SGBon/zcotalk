@@ -1,5 +1,5 @@
-#ifndef UOITALK_MESSENGER_H
-#define UOITALK_MESSENGER_H
+#ifndef ZCOTALK_MESSENGER_H
+#define ZCOTALK_MESSENGER_H
 #include<netinet/in.h>
 
 /* starts a thread which begins listening to messages

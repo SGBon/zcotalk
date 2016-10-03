@@ -1,5 +1,5 @@
-#ifndef UOITALK_SETUP_H
-#define UOITALK_SETUP_H
+#ifndef ZCOTALK_SETUP_H
+#define ZCOTALK_SETUP_H
 #include <netinet/in.h>
 
 /* query user about interface to use for broadcasting */

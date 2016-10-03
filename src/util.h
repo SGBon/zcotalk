@@ -1,5 +1,5 @@
-#ifndef UOITALK_UTIL_H
-#define UOITALK_UTIL_H
+#ifndef ZCOTALK_UTIL_H
+#define ZCOTALK_UTIL_H
 
 #define UTPORT 51200
 
