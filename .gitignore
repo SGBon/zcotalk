@@ -7,3 +7,4 @@ a.out
 *.so
 *.gch
 *.pch
+.depend
