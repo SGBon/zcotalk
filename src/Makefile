@@ -3,15 +3,16 @@ CFLAGS=-c -Wall -Wextra -g3
 LDFLAGS=-g3 -lpthread
 SOURCES=main.c setup.c util.c messenger.c
 OBJECTS=$(SOURCES:.c=.o)
+DEPEND=.depend
 EXECUTABLE=zcotalk
 
 all: $(SOURCES) $(EXECUTABLE) depend
 
-depend: .depend
+depend: $(DEPEND)
 
-.depend: $(SOURCES)
-	rm -f ./.depend
-	$(CC) $(CFLAGS) -MM $^ -MF ./.depend;
+$(DEPEND): $(SOURCES)
+	rm -f $@
+	$(CC) $(CFLAGS) -MM $^ > $@;
 
 include .depend
 
@@ -25,4 +26,4 @@ $(EXECUTABLE): $(OBJECTS)
 run: all
 	./$(EXECUTABLE)
 clean:
-	rm $(OBJECTS) $(EXECUTABLE)
+	rm $(OBJECTS) $(EXECUTABLE) $(DEPEND)
