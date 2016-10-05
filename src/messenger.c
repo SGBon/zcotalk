@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 600
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -12,15 +14,24 @@
 
 #define BUFLEN 512
 
+#define ARG_BARRIER_SIZE 2
+
 static pthread_t listener_thread;
 static pthread_mutex_t IO_lock;
+static pthread_barrier_t arg_barrier; /* argument barrier */
 static int listener_active = DISABLED;
 
 void *listener_cb(void *sid);
 
 void listener_start(int socket){
 	pthread_mutex_init(&IO_lock,NULL);
-	pthread_create(&listener_thread,NULL,listener_cb,(void *)socket);
+	if(pthread_barrier_init(&arg_barrier,NULL,ARG_BARRIER_SIZE)){
+		die("Failed to initialize barrier in listener_start");
+	}
+	pthread_create(&listener_thread,NULL,listener_cb, &socket);
+	/* argument may go out of scope before we it is obtained, so synchronize with barrier */
+	pthread_barrier_wait(&arg_barrier);
+	pthread_barrier_destroy(&arg_barrier);
 }
 
 void listener_end(){
@@ -35,7 +46,9 @@ void listener_end(){
 
 /* callback function used by the listener thread */
 void *listener_cb(void *sid){
-	int socket = (int) sid;
+	int socket = *(int *) sid;
+	/* argument may go out of scope before we obtain it, so synchronize with barrier */
+	pthread_barrier_wait(&arg_barrier);
 	struct sockaddr_in incoming;
 	socklen_t slen = sizeof(incoming);
 	char buffer[BUFLEN];
